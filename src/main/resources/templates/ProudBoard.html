@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>자랑 게시판</title>
+
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css" id="bootstrap-style"/>
+
+    <!-- Material Icon Css -->
+    <link rel="stylesheet" href="/css/materialdesignicons.min.css" type="text/css"/>
+
+    <!-- Unicon Css -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"/>
+
+</head>
+<body>
+<h2>자랑 게시판</h2><br>
+<button onclick="saveReq()">글쓰기</button><br>
+<div class="container">
+    <div class="row">
+        <th:block th:if="${session.loginDTO == null}">
+            <input type="hidden" id="memberNick">
+        </th:block>
+
+        <th:block th:unless="${session.loginDTO == null}">
+            <input type="hidden" id="memberNick" th:value="${session.loginDTO.getMemberNick()}">
+        </th:block>
+
+        <th:block th:unless="${boardList.isEmpty()}">
+            <div class="col" th:each="board:${boardList}">
+                <a th:href="@{|/board/proud/${board.bno}|}">
+                    <th:block th:unless="${board.hasFile==0}">
+                        <img th:src="@{|/upload/${board.repositoryFileName.get(0)}|}" alt="" style="margin:0.5em;padding:0;width:30rem;height:30rem;">
+                    </th:block>
+                    <th:block th:if="${board.hasFile==0}">
+                        <img src="https://lh3.google.com/u/0/d/1pAZ8IMRAA6uNiKlYLNeX7KSiMtd9wS6i=w1566-h858-iv1" alt="">
+                    </th:block><br>
+                    <p th:text="${board.writer}"></p>
+                    <strong th:text="${board.title}"></strong><span th:if="${board.commentDTOList!=null}"> [<span th:text="${board.commentDTOList.size()}"></span>]</span>
+                    <p th:text="${#temporals.format(board.createDate,'yyyy-MM-dd HH:mm:ss')}"></p>
+                </a>
+            </div>
+        </th:block>
+        <th:block th:if="${boardList.isEmpty()}">
+            게시물이 없어요!
+        </th:block>
+
+    </div>
+</div>
+
+<!--첫번째 페이지로 이동-->
+<!--/board/paging?page=1-->
+<span th:if="${boardList.getTotalPages()!=1}">
+<a th:href="@{/board/proud/(page=1)}">처음</a>
+    <!--이전 링크 활성화 비활성화-->
+    <!--boardList.getNumber() 사용자:2페이지 getNumber()=1-->
+<a th:href="${boardList.first} ? '#' : @{/board/proud/(page=${boardList.number})}">이전</a>
+</span>
+<span th:unless="${endPage!=1}">
+    <span>처음</span>
+    <span>이전</span>
+</span>
+<!--페이지 번호 링크(현재 페이지는 숫자만)-->
+<!--for(int i = startPage; i<endPage;i++) -->
+<th:block th:if="${boardList.getTotalPages()>=1}">
+<span th:each="page: ${#numbers.sequence(startPage,endPage)}">
+    <span th:if="${page==boardList.number+1}" th:text="${page}"></span>
+    <!--    unless(else) : 현재 페이지 번호가 아닌 다른페이지번호에는 링크를 보여줌 아래 a링크 -->
+    <span th:unless="${page==boardList.number+1}">
+        <a th:href="@{|/board/proud/?page=${page}|}" th:text="${page}"></a>
+    </span>
+</span>
+</th:block>
+<span th:if="${!boardList.isLast()}">
+<!--다음 링크 활성화 비활성화-->
+<a th:href="${boardList.last} ? '#' : @{/board/proud/(page=${boardList.number + 2})}">다음</a>
+<!--마지막 페이지로 이동-->
+<a th:href="${boardList.last}? '#' : @{/board/proud/(page=${boardList.totalPages})}">마지막</a>
+</span>
+<span th:unless="${!boardList.isLast()}">
+    <span>다음</span>
+    <span>마지막</span>
+</span>
+</body>
+<script th:inline="javascript">
+    const saveReq = () => {
+        const nick = document.querySelector("#memberNick").value;
+
+        alert(nick);
+        if(nick == '' || nick == null){
+            alert("로그인 후 이용 가능합니다.");
+            location.href="/member/login";
+        } else {
+            location.href="/board/proud/save"
+        }
+    }
+</script>
+</html>
