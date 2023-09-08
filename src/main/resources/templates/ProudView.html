@@ -1,63 +1,184 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
+
+    <meta charset="UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content=" "/>
+    <meta name="keywords" content=""/>
+    <meta content="Pichforest" name="author"/>
+
+    <link rel="shortcut icon" href="images/favicon.ico">
+
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css" id="bootstrap-style" />
+
+    <!-- Material Icon Css -->
+    <link rel="stylesheet" href="/css/materialdesignicons.min.css" type="text/css" />
+
+    <!-- Unicon Css -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
+
+    <!-- Swiper Css -->
+    <link rel="stylesheet" href="/css/tiny-slider.css" type="text/css" />
+    <link rel="stylesheet" href="/css/swiper.min.css" type="text/css" />
+
+    <!-- Custom Css -->
+    <link rel="stylesheet" href="/css/style.min.css" type="text/css" />
+
+
     <title th:text="${board.title}"></title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 </head>
-<body>
-<span th:text="${board.writer}" style="font-size: 2em;"></span>
-<span th:text="${#temporals.format(board.createDate,'yyyy-MM-dd HH:mm:ss')}" style="font-size: 2em;"></span>
-<span th:text="${board.hits}" style="font-size: 2em;"></span><br>
-<hr style="margin: 1em">
-<strong th:text="${board.title}" style="font-size: 5dvi;"></strong><br>
-<hr style="margin: 1em">
-<span th:if="${board.hasFile==1}"> <!-- 이미지가 있을시 출력-->
-    <span th:each="file:${board.repositoryFileName}">
-    <img th:src="@{|/upload/${file}|}" alt="게시글삽입이미지"><br>
-        </span>
-</span>
-<span th:text="${board.contents}"></span> <!--내용 출력-->
-<br>
-<hr style="margin: 1em">
-<button onclick="listReq()">목록</button>
-<span th:if="${session.loginDTO!=null}">
-<span th:if="${board.memberId==session.loginDTO.memberId}">
-<button onclick="updateReq()">수정</button>
-<button onclick="deleteReq()">삭제</button>
-</span>
-    </span>
-<!--삭제예정-->
-<span th:unless="${session.loginDTO!=null}">
-<button onclick="updateReq()">수정</button>
-<button onclick="deleteReq()">삭제</button>
-    </span>
-<!--댓글 작성-->
-<div id="comment-write">
-    <span th:if="${session.loginDTO!=null}">
-    <input type="text" id="commentWriter" th:value="${session.loginDTO.memberNick}"placeholder="작성자" readOnly/>
-    <input type="text" id="commentContents" placeholder="내용"/>
-    <button id="comment-write-btn" onclick="commentWrite()">댓글작성</button>
-</span>
-</div>
-<!--댓글 출력-->
-<div id="comment-list">
-    <table>
-        <tr th:if="${!commentList.isEmpty()}">
-            <th>댓글번호</th>
-            <th>작성자</th>
-            <th>내용</th>
-            <th>작성시간</th>
-        </tr>
-        <tr th:each="comment:${commentList}">
-            <td th:text="${comment.cno}"></td>
-            <td th:text="${comment.writer}"></td>
-            <td th:text="${comment.commentContents}"></td>
-            <td th:text="${#temporals.format(comment.commentCreatedTime,'yy-MM-dd HH:mm:ss')}"></td>
-            <td><button id="comment-modify-btn" onclick="">수정</button>
-                <button id="comment-delete-btn" onclick="">삭제</button></td>
-        </tr>
-    </table>
-</div>
+
+<body data-bs-spy="scroll" data-bs-target="#navbar-navlist" data-bs-offset="71">
+<!--Start Navbar-->
+<div th:replace="/header :: header"></div>
+<!--end Navbar-->
+<section class="section position-relative overflow-hidden" style=" top: 95px;">
+    <div class="page-wrapper container ">
+        <div class="row mt-4">
+            <div class="col-lg-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb default mb-0">
+                        <li class="breadcrumb-item">
+                            <a href="index.html" class="text-muted">홈</a>
+                        </li>
+                        <li class="breadcrumb-item active text-primary" aria-current="page">자유게시판</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+    </div>
+</section>
+<section class="section position-relative overflow-hidden"style=" top: 95px; padding-bottom: 90px;">
+    <div class="content-wrapper container ">
+        <div class="row">
+            <div class="col-lg-6">
+                <h2 class="fw-bold">자유게시판</h2>
+            </div>
+        </div>
+        <hr class="my-4">
+        <section class="artical flexbox pb-3">
+            <div class="container">
+                <div class="board-post">
+                    <h3 class="post-title"th:text="${board.title}" ></h3>
+                    <div class="post-header">
+                        <div class="info">
+                            <dl>
+                                <dt>작성자</dt>
+                                <dd th:text="${board.writer}"></dd>
+                            </dl>
+                            <dl>
+                                <dt class="th-h">조회수</dt>
+                                <dd class="th-h" th:text="${board.hits}"></dd>
+                            </dl>
+                            <dl>
+                                <dt>작성일</dt>
+                                <dd th:text="${#temporals.format(board.createDate,'yyyy-MM-dd HH:mm:ss')}"></dd>
+                            </dl>
+
+                        </div>
+                    </div>
+                    <div class="post-body">
+                        <dl class="file-list2">
+                            <dd>
+                                <span th:if="${board.hasFile==1}"> <!-- 이미지가 있을시 출력-->
+                                    <span th:each="file:${board.repositoryFileName}">
+                                        <img th:src="@{|/upload/${file}|}" alt="" style="width:100%;"><br>
+                                    </span>
+                                </span>
+                                <span th:text="${board.contents}"></span> <!--내용 출력-->
+                            </dd>
+                        </dl>
+                        <ul class="file-list">
+                            <li th:each="file:${board.fileList}">
+                                <a class="icon icon-paperclip-1"href="#none" data-action="downloadFile" style="cursor: pointer;" th:text="${file.getOriginalFilename()}"></a>
+                            </li>
+
+
+                        </ul>
+                    </div>
+                    <div class="row">
+                        <button class="col-2 btn btn-list float-right" onclick="listReq()">목록</button>
+                            <th:block th:if="${session.loginDTO!=null}">
+                            <th:block th:if="${board.memberId==session.loginDTO.memberId}">
+                                <button class="col-2 btn btn-list float-right" onclick="updateReq()" value="수정">수정</button>
+                                <button class="col-2 btn btn-list float-right" onclick="deleteReq()" value="삭제">삭제</button>
+                            </th:block>
+                            </th:block>
+                    </div>
+                    <div class="comment-box mt-5">
+                        <h4 class="fw-bold">댓글</h4>
+                        <div id="Comment-box-item mb-1 comment-write">
+                                <span th:if="${session.loginDTO!=null}">
+                                    <input type="hidden" id="memberId" name="memberId" th:value="${session.loginDTO.memberId}">
+                                    <input type="text" id="commentWriter" th:value="${session.loginDTO.memberNick}"placeholder="작성자" readOnly/>
+                                    <input type="text" id="commentContents" placeholder="내용">
+                                    <button id="comment-write-btn" onclick="commentWrite()">댓글작성</button>
+                                </span>
+                        </div>
+                        <div class="Comment-box-item mt-1" th:each="comment:${commentList}">
+                            <!--댓글 작성-->
+
+                            <!--댓글 출력-->
+<!--                            <div id="comment-list">-->
+<!--                                <table>-->
+<!--                                    <tr th:if="${!commentList.isEmpty()}">-->
+<!--                                        <th>댓글번호</th>-->
+<!--                                        <th>작성자</th>-->
+<!--                                        <th>내용</th>-->
+<!--                                        <th>작성시간</th>-->
+<!--                                    </tr>-->
+<!--                                    <tr th:each="comment:${commentList}">-->
+<!--                                        <td th:text="${comment.cno}"></td>-->
+<!--                                        <td th:text="${comment.writer}"></td>-->
+<!--                                        <td th:text="${comment.commentContents}"></td>-->
+<!--                                        <td th:text="${#temporals.format(comment.commentCreatedTime,'yy-MM-dd HH:mm:ss')}"></td>-->
+<!--                                        <td><button id="comment-modify-btn" onclick="">수정</button>-->
+<!--                                            <button id="comment-delete-btn" onclick="">삭제</button></td>-->
+<!--                                    </tr>-->
+<!--                                </table>-->
+<!--                            </div>-->
+                            <div class="comment-item" id="comment-list">
+                                <div class="d-flex align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <div class="avatar">
+                                                <img src="/images/img-1.png" alt=""
+                                                     class="img-fluid avatar-md rounded-circle">
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-2">
+                                            <h6 class="mb-0" th:text="${comment.writer}"></h6>
+                                        </div>
+                                            <td><button class="btn" id="comment-modify-btn" onclick="">수정</button>
+                                                <button class="btn" id="comment-delete-btn" onclick="">삭제</button></td>
+                                    </div>
+                                    <div class="time ms-auto">
+                                        <h6 th:text="${#temporals.format(comment.commentCreatedTime,'yy-MM-dd HH:mm:ss')}"></h6>
+                                    </div>
+                                </div>
+
+                                <div class="message-box mt-4">
+                                    <p class="text-muted mb-3" th:text="${comment.commentContents}"></p>
+<!--                                    <a href="" class="text-blue">Reply</a>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+</section>
+
+
+
+
 <!--    &lt;!&ndash;/* 댓글 수정 popup */&ndash;&gt;-->
 <!--    <div id="commentUpdatePopup" class="popLayer">-->
 <!--        <h3>댓글 수정</h3>-->
@@ -84,6 +205,9 @@
 <!--        </div>-->
 <!--        <button type="button" class="btn_close" onclick="closeCommentUpdatePopup();"><span><i class="far fa-times-circle"></i></span></button>-->
 <!--    </div>-->
+<!-- start footer -->
+    <div th:replace="/footer :: footer"></div>
+<!-- end footer-->
 
 </body>
 <script th:inline="javascript">
@@ -146,4 +270,17 @@
         })
     };
 </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<!--Bootstrap Js-->
+<script src="/js/bootstrap.bundle.min.js"></script>
+
+<!-- Slider Js -->
+<script src="/js/tiny-slider.js"></script>
+<script src="/js/swiper.min.js"></script>
+
+<!-- counter -->
+<script src="/js/counter.init.js"></script>
+
+<!-- App Js -->
+<script src="/js/app.js"></script>
 </html>

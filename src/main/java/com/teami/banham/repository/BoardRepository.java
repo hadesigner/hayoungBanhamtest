@@ -1,12 +1,13 @@
 package com.teami.banham.repository;
 
 import com.teami.banham.entity.ProudBoardEntity;
-import org.apache.ibatis.annotations.Param;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
@@ -21,7 +22,7 @@ public interface BoardRepository extends JpaRepository<ProudBoardEntity,Long> {
 
     @Modifying
     @Query(value="update ProudBoardEntity b set b.delete_ck=1 where b.bno=:bno")
-    void deleteById(Long bno);
+    void deleteById(@Param("bno") Long bno);
 
     Optional<ProudBoardEntity> findByBno(Long bno);
 }
