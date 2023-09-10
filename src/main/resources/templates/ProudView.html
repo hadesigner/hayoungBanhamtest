@@ -30,13 +30,14 @@
 
 
     <title th:text="${board.title}"></title>
-</head>
 
+</head>
 <body data-bs-spy="scroll" data-bs-target="#navbar-navlist" data-bs-offset="71">
 <!--Start Navbar-->
 <div th:replace="/header :: header"></div>
 <!--end Navbar-->
-<section class="section position-relative overflow-hidden" style=" top: 95px;">
+<section class="section position-relative overflow-hidden"
+         style=" top: 95px;">
     <div class="page-wrapper container ">
         <div class="row mt-4">
             <div class="col-lg-12">
@@ -103,12 +104,12 @@
                     </div>
                     <div class="row">
                         <button class="col-2 btn btn-list float-right" onclick="listReq()">목록</button>
-                            <th:block th:if="${session.loginDTO!=null}">
+                        <th:block th:if="${session.loginDTO!=null}">
                             <th:block th:if="${board.memberId==session.loginDTO.memberId}">
                                 <button class="col-2 btn btn-list float-right" onclick="updateReq()" value="수정">수정</button>
                                 <button class="col-2 btn btn-list float-right" onclick="deleteReq()" value="삭제">삭제</button>
                             </th:block>
-                            </th:block>
+                        </th:block>
                     </div>
                     <div class="comment-box mt-5">
                         <h4 class="fw-bold">댓글</h4>
@@ -119,52 +120,51 @@
                                     <input type="text" id="commentContents" placeholder="내용">
                                     <button id="comment-write-btn" onclick="commentWrite()">댓글작성</button>
                                 </span>
-                        </div>
-                        <div class="Comment-box-item mt-1" th:each="comment:${commentList}">
-                            <!--댓글 작성-->
-
-                            <!--댓글 출력-->
-<!--                            <div id="comment-list">-->
-<!--                                <table>-->
-<!--                                    <tr th:if="${!commentList.isEmpty()}">-->
-<!--                                        <th>댓글번호</th>-->
-<!--                                        <th>작성자</th>-->
-<!--                                        <th>내용</th>-->
-<!--                                        <th>작성시간</th>-->
-<!--                                    </tr>-->
-<!--                                    <tr th:each="comment:${commentList}">-->
-<!--                                        <td th:text="${comment.cno}"></td>-->
-<!--                                        <td th:text="${comment.writer}"></td>-->
-<!--                                        <td th:text="${comment.commentContents}"></td>-->
-<!--                                        <td th:text="${#temporals.format(comment.commentCreatedTime,'yy-MM-dd HH:mm:ss')}"></td>-->
-<!--                                        <td><button id="comment-modify-btn" onclick="">수정</button>-->
-<!--                                            <button id="comment-delete-btn" onclick="">삭제</button></td>-->
-<!--                                    </tr>-->
-<!--                                </table>-->
-<!--                            </div>-->
-                            <div class="comment-item" id="comment-list">
-                                <div class="d-flex align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-shrink-0">
-                                            <div class="avatar">
+                                <div class="forum-form mt-4">
+                                    <div class="row d-flex align-items-center justify-content-start">
+                                        <div class="col-sm-2 col-3">
+                                            <div class="avatar forum-profile">
                                                 <img src="/images/img-1.png" alt=""
-                                                     class="img-fluid avatar-md rounded-circle">
+                                                     class="img-fluid rounded-circle avatar-md">
                                             </div>
                                         </div>
-                                        <div class="flex-grow-1 ms-2">
-                                            <h6 class="mb-0" th:text="${comment.writer}"></h6>
+                                        <div class="col-xl-8 col-md-6 col-5 my-2">
+                                            <form>
+                                                <input type="text" class="form-control" id="exampleFormControlInput1"
+                                                       placeholder="내용을 입력해주세요.">
+                                            </form>
                                         </div>
-                                            <td><button class="btn" id="comment-modify-btn" onclick="">수정</button>
-                                                <button class="btn" id="comment-delete-btn" onclick="">삭제</button></td>
-                                    </div>
-                                    <div class="time ms-auto">
-                                        <h6 th:text="${#temporals.format(comment.commentCreatedTime,'yy-MM-dd HH:mm:ss')}"></h6>
+                                        <div class="col-2">
+                                            <button class="btn btn-dark">댓글작성</button>
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div class="message-box mt-4">
-                                    <p class="text-muted mb-3" th:text="${comment.commentContents}"></p>
-<!--                                    <a href="" class="text-blue">Reply</a>-->
+                        </div>
+                        <div  id="comment-list">
+                            <div  class="Comment-box-item mt-1" th:each="comment:${commentList}">
+                                <div class="comment-item">
+                                    <div class="d-flex align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <div class="avatar">
+                                                    <img src="/images/img-1.png" alt="" class="img-fluid avatar-md rounded-circle">
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-2">
+                                                <h6 class="mb-0" th:text="${comment.writer}"></h6>
+                                            </div>
+                                            <td>
+                                                <button class="btn" id="comment-modify-btn" onclick="">수정</button>
+                                                <button class="btn" id="comment-delete-btn" onclick="">삭제</button>
+                                            </td>
+                                        </div>
+                                        <div class="time ms-auto">
+                                            <h6 th:text="${#temporals.format(comment.commentCreatedTime,'yy-MM-dd HH:mm:ss')}"></h6>
+                                        </div>
+                                    </div>
+                                    <div class="message-box mt-4">
+                                        <p class="text-muted mb-3" th:text="${comment.commentContents}"></p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -206,7 +206,7 @@
 <!--        <button type="button" class="btn_close" onclick="closeCommentUpdatePopup();"><span><i class="far fa-times-circle"></i></span></button>-->
 <!--    </div>-->
 <!-- start footer -->
-    <div th:replace="/footer :: footer"></div>
+<div th:replace="/footer :: footer"></div>
 <!-- end footer-->
 
 </body>
@@ -240,28 +240,43 @@
             type: "post",
             url: "/comment/save",
             data: {
+                "memberId":sessionId,
                 "writer": writer,
                 "commentContents": contents,
                 "bno": bno
             },
             success: function (res) {
                 console.log("요청 성공", res);
-                let output = "<table>";
-                output += "<tr><th>댓글번호</th>";
-                output += "<th>작성자</th>";
-                output += "<th>내용</th>";
-                output += "<th>작성시간</th></tr>";
+
+                let output = '';
                 for (let i in res) {
-                    output += "<tr>";
-                    output += "<td>" + res[i].cno + "</td>";
-                    output += "<td>" + res[i].writer + "</td>";
-                    output += "<td>" + res[i].commentContents + "</td>";
-                    output += "<td th:text='${#temporals.format("+res[i].commentCreatedTime+","+"'yy-MM-dd HH:mm:ss')}>"+"</td>";
-                    output += "</tr>";
+                    output += '<div class="Comment-box-item mt-1">';
+                    output += '<div class="comment-item">';
+                    output += '<div class="d-flex align-items-center">';
+                    output += '<div class="d-flex align-items-center">';
+                    output += '<div class="flex-shrink-0">';
+                    output += '<div class="avatar">';
+                    output += '<img src="/images/img-1.png" alt="" class="img-fluid avatar-md rounded-circle">';
+                    output += '</div>';
+                    output += '</div>';
+                    output += '<div class="flex-grow-1 ms-2">';
+                    output += '<h6 class="mb-0">' + res[i].writer + '</h6>';
+                    output += '</div>';
+                    output += '<td><button class="btn" id="comment-modify-btn" onclick="">수정</button>';
+                    output += '<button class="btn" id="comment-delete-btn" onclick="">삭제</button></td>';
+                    output += '</div>';
+                    output += '<div class="time ms-auto">';
+                    output += '<h6>' + formatDate(res[i].commentCreatedTime) + '</h6>';
+                    output += '</div>';
+                    output += '</div>';
+                    output += '<div class="message-box mt-4">';
+                    output += '<p class="text-muted mb-3">' + res[i].commentContents + '</p>';
+                    output += '</div>';
+                    output += '</div>';
+                    output += '</div>';
                 }
-                output += "</table>";
-                document.getElementById('comment-list').innerHTML = output;
-                document.getElementById('commentWriter').value =sessionId;
+                document.getElementById('comment-list').innerHTML=output;
+                document.getElementById('commentWriter').value =writer;
                 document.getElementById('commentContents').value = '';
             },
             error: function (err) {
@@ -269,6 +284,13 @@
             }
         })
     };
+
+
+    function formatDate(dateString) {
+        const options = { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+        const formattedDate = new Date(dateString).toLocaleDateString('en-US', options);
+        return formattedDate;
+    }
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <!--Bootstrap Js-->
